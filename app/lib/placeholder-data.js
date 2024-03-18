@@ -1,5 +1,3 @@
-// This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
-// https://nextjs.org/learn/dashboard-app/fetching-data
 const users = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
@@ -77,93 +75,94 @@ const invoices = [
     customer_id: customers[0].id,
     amount: 15795,
     status: 'pending',
-    date: '2022-12-06',
+    date: '2022-12-06T00:00:00Z',
   },
   {
     customer_id: customers[1].id,
     amount: 20348,
     status: 'pending',
-    date: '2022-11-14',
+    date: '2022-11-14T00:00:00Z',
   },
   {
     customer_id: customers[4].id,
     amount: 3040,
     status: 'paid',
-    date: '2022-10-29',
+    date: '2022-10-29T00:00:00Z',
   },
   {
     customer_id: customers[3].id,
     amount: 44800,
     status: 'paid',
-    date: '2023-09-10',
+    date: '2023-09-10T00:00:00Z',
   },
   {
     customer_id: customers[5].id,
     amount: 34577,
     status: 'pending',
-    date: '2023-08-05',
+    date: '2023-08-05T00:00:00Z',
   },
   {
     customer_id: customers[7].id,
     amount: 54246,
     status: 'pending',
-    date: '2023-07-16',
+    date: '2023-07-16T00:00:00Z',
   },
   {
     customer_id: customers[6].id,
     amount: 666,
     status: 'pending',
-    date: '2023-06-27',
+    date: '2023-06-27T00:00:00Z',
   },
   {
     customer_id: customers[3].id,
     amount: 32545,
     status: 'paid',
-    date: '2023-06-09',
+    date: '2023-06-09T00:00:00Z',
   },
   {
     customer_id: customers[4].id,
     amount: 1250,
     status: 'paid',
-    date: '2023-06-17',
+    date: '2023-06-17T00:00:00Z',
   },
   {
     customer_id: customers[5].id,
     amount: 8546,
     status: 'paid',
-    date: '2023-06-07',
+    date: '2023-06-07T00:00:00Z',
   },
   {
     customer_id: customers[1].id,
     amount: 500,
     status: 'paid',
-    date: '2023-08-19',
+    date: '2023-08-19T00:00:00Z',
   },
   {
     customer_id: customers[5].id,
     amount: 8945,
     status: 'paid',
-    date: '2023-06-03',
+    date: '2023-06-03T00:00:00Z',
   },
   {
     customer_id: customers[2].id,
     amount: 8945,
     status: 'paid',
-    date: '2023-06-18',
+    date: '2023-06-18T00:00:00Z',
   },
   {
     customer_id: customers[0].id,
     amount: 8945,
     status: 'paid',
-    date: '2023-10-04',
+    date: '2023-10-04T00:00:00Z',
   },
   {
     customer_id: customers[2].id,
     amount: 1000,
     status: 'paid',
-    date: '2022-06-05',
+    date: '2022-06-05T00:00:00Z',
   },
 ];
+
 
 const revenue = [
   { month: 'Jan', revenue: 2000 },
@@ -184,5 +183,5 @@ module.exports = {
   users,
   customers,
   invoices,
-  revenue,
+  revenue
 };
