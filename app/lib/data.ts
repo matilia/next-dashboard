@@ -3,16 +3,17 @@ import {formatCurrency} from './utils';
 import connection from "@/app/lib/db.js";
 import sql from 'sql-template-strings'
 import {PrismaClient} from "@prisma/client";
+import {unstable_noStore as noStore} from "next/cache";
 
 const prismaClient = new PrismaClient();
 
 
 export async function fetchRevenue() {
+    noStore();
     try {
-        // const data = await connection.query(sql`SELECT * FROM revenue`);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         return await prismaClient.revenue.findMany();
     } catch (error) {
-        console.error('Database Error:', error);
         throw new Error('Failed to fetch revenue data.');
     } finally {
         await prismaClient.$disconnect();
@@ -20,6 +21,7 @@ export async function fetchRevenue() {
 }
 
 export async function fetchLatestInvoices() {
+    noStore();
     try {
         const data = await prismaClient.invoices.findMany({
             include: {
@@ -51,28 +53,8 @@ export async function fetchLatestInvoices() {
     }
 }
 
-
-// export async function fetchLatestInvoices() {
-//     try {
-//         const data = await connection.query(sql`
-//       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-//       FROM invoices
-//       JOIN customers ON invoices.customer_id = customers.id
-//       ORDER BY invoices.date DESC
-//       LIMIT 5`);
-//
-//         return data.rows.map((invoice: { amount: number; }) => ({
-//             ...invoice,
-//             amount: formatCurrency(invoice.amount),
-//         }));
-//     } catch (error) {
-//         console.error('Database Error:', error);
-//         throw new Error('Failed to fetch the latest invoices.');
-//     }
-// }
-
-
 export async function fetchCardData() {
+    noStore();
     try {
         const invoiceCountPromise = prismaClient.invoices.count();
         const customerCountPromise = prismaClient.customers.count();
@@ -93,8 +75,8 @@ export async function fetchCardData() {
         const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
 
         return {
-            numberOfCustomers,
             numberOfInvoices,
+            numberOfCustomers,
             totalPaidInvoices,
             totalPendingInvoices,
         };
@@ -104,44 +86,10 @@ export async function fetchCardData() {
     }
 }
 
-// export async function fetchCardData() {
-//     try {
-//         const invoiceCountPromise = connection.query(sql`SELECT COUNT(*) FROM invoices`);
-//         const customerCountPromise = connection.query(sql`SELECT COUNT(*) FROM customers`);
-//         const invoiceStatusPromise = connection.query(sql`SELECT
-//          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-//          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-//          FROM invoices`);
-//
-//         const data = await Promise.all([
-//             invoiceCountPromise,
-//             customerCountPromise,
-//             invoiceStatusPromise,
-//         ]);
-//
-//         const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
-//         const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-//         const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-//         const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
-//
-//         return {
-//             numberOfCustomers,
-//             numberOfInvoices,
-//             totalPaidInvoices,
-//             totalPendingInvoices,
-//         };
-//     } catch (error) {
-//         console.error('Database Error:', error);
-//         throw new Error('Failed to fetch card data.');
-//     }
-// }
-
 const ITEMS_PER_PAGE = 6;
 
-export async function fetchFilteredInvoices(
-    query: string,
-    currentPage: number,
-) {
+export async function fetchFilteredInvoices(query: string, currentPage: number) {
+    noStore();
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
     try {
@@ -174,6 +122,7 @@ export async function fetchFilteredInvoices(
 }
 
 export async function fetchInvoicesPages(query: string) {
+    noStore();
     try {
         const count = await connection.query(sql`SELECT COUNT(*)
     FROM invoices
@@ -195,6 +144,7 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
+    noStore();
     try {
         const data = await connection.query(sql`
       SELECT
@@ -220,6 +170,7 @@ export async function fetchInvoiceById(id: string) {
 }
 
 export async function fetchCustomers() {
+    noStore();
     try {
         const data = await connection.query(sql`
       SELECT
@@ -238,6 +189,7 @@ export async function fetchCustomers() {
 }
 
 export async function fetchFilteredCustomers(query: string) {
+    noStore();
     try {
         const data = await connection.query(sql`
 		SELECT
@@ -271,6 +223,7 @@ export async function fetchFilteredCustomers(query: string) {
 }
 
 export async function getUser(email: string) {
+    noStore();
     try {
         const user = await connection.query(sql`SELECT * FROM users WHERE email=${email}`);
         return user.rows[0] as User;
