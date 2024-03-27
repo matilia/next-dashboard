@@ -7,7 +7,6 @@ import {unstable_noStore as noStore} from "next/cache";
 
 const prismaClient = new PrismaClient();
 
-
 export async function fetchRevenue() {
     noStore();
     try {
@@ -134,7 +133,6 @@ export async function fetchInvoicesPages(query: string) {
       invoices.date::text ILIKE ${`%${query}%`} OR
       invoices.status ILIKE ${`%${query}%`}
   `);
-
         const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
         return totalPages;
     } catch (error) {
@@ -146,23 +144,16 @@ export async function fetchInvoicesPages(query: string) {
 export async function fetchInvoiceById(id: string) {
     noStore();
     try {
-        const data = await connection.query(sql`
-      SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
-    `);
-
-        const invoice = data.rows.map((invoice: { amount: number; }) => ({
-            ...invoice,
-            // Convert amount from cents to dollars
-            amount: invoice.amount / 100,
-        }));
-
-        return invoice[0];
+        const invoice = await prismaClient.invoices.findUnique({where: {id: id}});
+        if (!invoice) {
+            console.error('No customers found.');
+        }else{
+            const amount = invoice.amount / 100;
+            return {
+                ...invoice,
+                amount: amount,
+            };
+        }
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch invoice.');
@@ -172,16 +163,16 @@ export async function fetchInvoiceById(id: string) {
 export async function fetchCustomers() {
     noStore();
     try {
-        const data = await connection.query(sql`
-      SELECT
-        id,
-        name
-      FROM customers
-      ORDER BY name ASC
-    `);
-
-        const customers = data.rows;
-        return customers;
+        const customers = await prismaClient.customers.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        });
+        if (!customers) {
+            console.error('No customers found.');
+        }else {
+            return customers;
+        }
     } catch (err) {
         console.error('Database Error:', err);
         throw new Error('Failed to fetch all customers.');
